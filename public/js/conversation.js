@@ -163,6 +163,7 @@ var ConversationPanel = (function() {
 
     textArray.forEach(function(currentText) {
       if (currentText) {
+        speech(currentText, isUser);
         var messageJson = {
           // <div class='segments'>
           'tagName': 'div',
@@ -223,6 +224,25 @@ var ConversationPanel = (function() {
       // Clear input box for further messages
       inputBox.value = '';
       Common.fireEvent(inputBox, 'input');
+    }
+  }
+    function speech(text, isUser)
+  {
+    try {
+    var synthes = new SpeechSynthesisUtterance(text);
+    var voices = speechSynthesis.getVoices();
+    synthes.lang = "ja-JP";
+    voices.forEach(function(v, i){
+        // ユーザー
+        if (isUser) {
+          if(v.name == 'Microsoft Haruka Desktop - Japanese') synthes.voice = v;
+        } else {
+          // ワトソン
+          if(v.name == 'Google 日本語') synthes.voice = v;
+        }
+    });
+    speechSynthesis.speak( synthes );
+    } catch (e) {
     }
   }
 }());
